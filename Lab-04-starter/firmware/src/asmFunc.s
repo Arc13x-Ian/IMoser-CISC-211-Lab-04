@@ -14,7 +14,7 @@
 .type nameStr,%gnu_unique_object
     
 /*** STUDENTS: Change the next line to your name!  **/
-nameStr: .asciz "Inigo Montoya"  
+nameStr: .asciz "Ian Moser"  
 
 .align   /* realign so that next mem allocations are on word boundaries */
  
@@ -71,7 +71,94 @@ asmFunc:
  
     
     /*** STUDENTS: Place your code BELOW this line!!! **************/
-
+        
+    MOV r1, 0
+    
+    LDR r2, =eat_out
+    STR r1, [r2]
+    LDR r2, =stay_in
+    STR r1, [r2]
+    LDR r2, =eat_ice_cream
+    STR r1, [r2]
+    LDR r2, =we_have_a_problem
+    STR r1, [r2]
+    LDR r2, =transaction
+    STR r0, [r2]
+    /* This loads each variable's address into register 2, then puts zero into
+     that variable's register. (except transaction, which has r0's number.
+     This way, there won't be trash numbers left in the spots needed for the 
+     variables.*/
+     
+    CMP r0, 1000
+    BGT ohNo
+    
+    CMP r0, -1000
+    BLT ohNo
+    /* checks if the transaction is within range, sending it to the oh No zone
+     if range is exceeded */
+    
+    
+    LDR r3, =balance
+    LDR r5, [r3]
+    
+    tmpBalance: ADDS r4, r0, r5
+    BVS ohNo
+    STR r4,[r3]
+     /* creates the temp balance variable, which is transaction (in r0) and 
+     balance added. And if it overflows, oh no it. If it doesn't overflow,
+     we turn the temp balance into our new balance */
+    
+    CMP r4, 0
+    BGT eatOut
+    BLT stayIn
+    BEQ iceCream
+    /* check if balance is positive, negative, or zero, and send the code
+     to the appropriate branch, which will turn on the right flag, then wrap
+     up the program. */
+    
+    
+    
+ohNo:
+    
+    LDR r2, =transaction
+    MOV r1, 0
+    STR r1, [r2]
+    
+    LDR r2, =we_have_a_problem
+    MOV r1, 1
+    STR r1, [r2]
+    
+    LDR r2, =balance
+    LDR r0, [r2]
+    
+    BAL done
+    
+eatOut:
+    
+    LDR r2, =eat_out
+    MOV r1, 1
+    STR r1, [r2]
+    BAL wrapUp
+    
+stayIn:
+    
+    LDR r2, =stay_in
+    MOV r1, 1
+    STR r1, [r2]
+    BAL wrapUp
+    
+iceCream:
+    
+    LDR r2, =eat_ice_cream
+    MOV r1, 1
+    STR r1, [r2]
+    BAL wrapUp
+    
+wrapUp:
+    
+    LDR r0, [r3]
+    BAL done
+    
     
     /*** STUDENTS: Place your code ABOVE this line!!! **************/
 
